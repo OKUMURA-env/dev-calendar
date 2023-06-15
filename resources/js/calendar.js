@@ -44,7 +44,7 @@ let calendar = new Calendar(calendarEl, {
     select: function (selectInfo) {
         let title = prompt("イベントを入力してください");
 
-        console.log(selectInfo);
+        // console.log(selectInfo);
         if (title) {
             axios
                 .post("http://localhost/schedule-add", {
@@ -64,6 +64,24 @@ let calendar = new Calendar(calendarEl, {
                     console.log(error);
                 });
         }
+    },
+    events: function (selectInfo, successCallback, failureCallback) {
+        // Laravelのイベント取得処理の呼び出し
+        axios
+            .post("http://localhost/schedule-get", {
+                start_date: selectInfo.startStr.valueOf(),
+                end_date: selectInfo.endStr.valueOf(),
+            })
+            .then((response) => {
+                // 追加したイベントを削除
+                calendar.removeAllEvents();
+                // カレンダーに読み込み
+                successCallback(response.data);
+            })
+            .catch(() => {
+                // バリデーションエラーなど
+                alert("登録に失敗しました");
+            });
     },
 
 });
