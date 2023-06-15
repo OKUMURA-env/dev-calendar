@@ -27,5 +27,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::get('/calendar', [ScheduleController::class, 'calendar'])->name('calendar');
-Route::post('/schedule-get', [ScheduleController::class, 'scheduleGet']);
+Route::post('/schedule-get', [ScheduleController::class, 'scheduleGet'])->name('schedule-get');
 Route::post('/schedule-add', [ScheduleController::class, 'scheduleAdd'])->name('schedule-add');
