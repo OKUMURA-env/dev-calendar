@@ -12,6 +12,8 @@ axios.defaults.headers.common = {
         .getAttribute("content"),
 };
 
+document.addEventListener('DOMContentLoaded', function() {
+
 var calendarEl = document.getElementById("calendar");
 
 let calendar = new Calendar(calendarEl, {
@@ -67,3 +69,4 @@ let calendar = new Calendar(calendarEl, {
 });
 
 calendar.render();
+});
