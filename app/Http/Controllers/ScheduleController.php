@@ -24,9 +24,8 @@ class ScheduleController extends Controller
      */
     public function scheduleGet(Request $request)
     {    
-        dd($request->all());
-        $start_date = date('Y-m-d', $request->input('start_date') / 1000);
-        $end_date = date('Y-m-d', $request->input('end_date') / 1000);
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
 
         // 登録処理
         return Schedule::query()
