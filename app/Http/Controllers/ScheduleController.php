@@ -31,6 +31,7 @@ class ScheduleController extends Controller
         return Schedule::query()
             ->select(
                 // FullCalendarの形式に合わせる
+                'id',
                 'start_date as start',
                 'end_date as end',
                 'event_name as title'
@@ -64,4 +65,21 @@ class ScheduleController extends Controller
 
         return redirect('http://localhost/calendar');
     }
+
+    /**
+     * イベントを更新
+     *
+     * @param  Request  $request
+     */
+    public function scheduleUpdate(Request $request)
+    {
+        $event = Schedule::where('id',$request->id)->update([
+            'event_name' => $request->event_name,
+        ]);
+
+        return response()->json($event);
+
+        return redirect('http://localhost/calendar');
+    }
+
 }
