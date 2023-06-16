@@ -68,6 +68,8 @@ let calendar = new Calendar(calendarEl, {
                 end_date: selectInfo.endStr.valueOf(),
             })
             .then((response) => {
+                // console.log(response);
+
                 // 追加したイベントを削除
                 calendar.removeAllEvents();
                 // カレンダーに読み込み
@@ -78,8 +80,30 @@ let calendar = new Calendar(calendarEl, {
                 alert("登録に失敗しました");
             });
     },
+    
+    eventClick:function(selectInfo,event,jsEvent){
+        let selectId = selectInfo.event.id;
+        // console.log(selectId);
+        let title = prompt('予定を入力してください');
+        if(title && title!=""){
+            axios
+                .post("http://localhost/schedule-update", {
+                    id:selectId,
+                    event_name: title,
+                })
+                .then(() => {
+                    calendar.refetchEvents();
+                })
+                .catch((response) => {
+                    console.log(response)
+                    alert("編集に失敗しました");
+                });
+    }
+
+},
 
 });
+
 
 calendar.render();
 });
