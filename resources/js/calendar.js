@@ -53,12 +53,7 @@ let calendar = new Calendar(calendarEl, {
                     event_name: title,
                 })
                 .then(() => {
-                    // イベントの追加
-                    calendar.addEvent({
-                        start_date: selectInfo.startStr,
-                        end_date: selectInfo.endStr,
-                        event_name: title,
-                    });
+                    calendar.refetchEvents();
                 })
                 .catch(() => {
                     console.log(error);
