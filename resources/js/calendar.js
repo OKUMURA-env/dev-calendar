@@ -124,7 +124,6 @@ let calendar = new Calendar(calendarEl, {
     // droppable: true,//あってもなくてもいいかも
     editable: true,
     eventDrop: function (selectInfo, delta, revertFunc, jsEvent, ui, view) {
-       // ドラッグ後の日付にデータ更新する
            axios
                .post("http://localhost/schedule-update", {
                    id:selectInfo.event.id,
@@ -142,9 +141,20 @@ let calendar = new Calendar(calendarEl, {
         
       },
 
-    eventResize: function(info) {
-   
-
+    eventResize: function(selectInfo) {
+        axios
+            .post("http://localhost/schedule-update", {
+                id:selectInfo.event.id,
+                start_date:selectInfo.event.startStr,
+                end_date:selectInfo.event.endStr,
+                event_name: selectInfo.event.title,
+            })
+            .then(() => {
+                calendar.refetchEvents();
+            })
+            .catch(() => {
+                alert("失敗しました");
+            });
    
     },
 
