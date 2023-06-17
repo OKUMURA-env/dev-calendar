@@ -102,6 +102,24 @@ let calendar = new Calendar(calendarEl, {
 
 },
 
+    eventClick:function(selectInfo){
+        if(confirm('削除しますか？')){
+            let selectId = selectInfo.event.id;
+            axios
+                .post("http://localhost/schedule-destroy", {
+                    id:selectId,
+                })
+                .then(() => {
+                    calendar.refetchEvents();
+                })
+                .catch((response) => {
+                    console.log(response)
+                    alert("削除できませんでした");
+                });
+
+            
+        }
+    },
 
 });
 

@@ -82,4 +82,16 @@ class ScheduleController extends Controller
         return redirect('http://localhost/calendar');
     }
 
+    /**
+     * イベントを削除
+     *
+     * @param  Request  $request
+     */
+    public function scheduleDestroy(Request $request)
+    {
+        Schedule::find($request->id)->delete();
+
+        return redirect('http://localhost/calendar');
+    }
+
 }

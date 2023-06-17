@@ -29,3 +29,4 @@ Route::get('/calendar', [ScheduleController::class, 'calendar'])->name('calendar
 Route::post('/schedule-get', [ScheduleController::class, 'scheduleGet'])->name('schedule-get');
 Route::post('/schedule-add', [ScheduleController::class, 'scheduleAdd'])->name('schedule-add');
 Route::post('/schedule-update', [ScheduleController::class, 'scheduleUpdate'])->name('schedule-update');
+Route::post('/schedule-destroy', [ScheduleController::class, 'scheduleDestroy'])->name('schedule-destroy');
