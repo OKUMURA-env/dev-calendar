@@ -84,7 +84,7 @@ let calendar = new Calendar(calendarEl, {
     eventClick:function(selectInfo,event,jsEvent){
         let selectId = selectInfo.event.id;
         // console.log(selectId);
-        let title = prompt('予定を入力してください');
+        let title = prompt('予定を更新してください:'+selectInfo.event.title);
         if(title && title!=""){
             axios
                 .post("http://localhost/schedule-update", {
@@ -101,6 +101,7 @@ let calendar = new Calendar(calendarEl, {
     }
 
 },
+
 
 });
 
