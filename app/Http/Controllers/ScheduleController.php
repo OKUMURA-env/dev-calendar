@@ -75,6 +75,8 @@ class ScheduleController extends Controller
     {
         $event = Schedule::where('id',$request->id)->update([
             'event_name' => $request->event_name,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
         ]);
 
         return response()->json($event);

@@ -14,6 +14,7 @@ axios.defaults.headers.common = {
 
 document.addEventListener('DOMContentLoaded', function() {
 
+var containerEl = document.getElementById('external-events-list');
 var calendarEl = document.getElementById("calendar");
 
 let calendar = new Calendar(calendarEl, {
@@ -35,8 +36,7 @@ let calendar = new Calendar(calendarEl, {
         month: "月",
         list: "一覧",
     },
-
-
+   
     noEventsContent: "スケジュールはありません",
 
     // 日付をクリック、または範囲を選択したイベント
@@ -82,47 +82,75 @@ let calendar = new Calendar(calendarEl, {
     },
     
     eventClick:function(selectInfo,event,jsEvent){
+        console.log(selectInfo);
         let selectId = selectInfo.event.id;
-        // console.log(selectId);
         let title = prompt('予定を更新してください:'+selectInfo.event.title);
         if(title && title!=""){
             axios
                 .post("http://localhost/schedule-update", {
                     id:selectId,
+                    start_date:selectInfo.event.startStr,
+                    end_date:selectInfo.event.endStr,
                     event_name: title,
                 })
                 .then(() => {
                     calendar.refetchEvents();
                 })
-                .catch((response) => {
-                    console.log(response)
+                .catch(() => {
                     alert("編集に失敗しました");
                 });
     }
 
 },
 
-    eventClick:function(selectInfo){
-        if(confirm('削除しますか？')){
-            let selectId = selectInfo.event.id;
-            axios
-                .post("http://localhost/schedule-destroy", {
-                    id:selectId,
-                })
-                .then(() => {
-                    calendar.refetchEvents();
-                })
-                .catch((response) => {
-                    console.log(response)
-                    alert("削除できませんでした");
-                });
+    // eventClick:function(selectInfo){
+    //     if(confirm('削除しますか？')){
+    //         let selectId = selectInfo.event.id;
+    //         axios
+    //             .post("http://localhost/schedule-destroy", {
+    //                 id:selectId,
+    //             })
+    //             .then(() => {
+    //                 calendar.refetchEvents();
+    //             })
+    //             .catch(() => {
+    //                 alert("削除できませんでした");
+    //             });
 
             
-        }
+    //     }
+    // },
+
+    // droppable: true,//あってもなくてもいいかも
+    editable: true,
+    eventDrop: function (selectInfo, delta, revertFunc, jsEvent, ui, view) {
+       // ドラッグ後の日付にデータ更新する
+           axios
+               .post("http://localhost/schedule-update", {
+                   id:selectInfo.event.id,
+                   start_date:selectInfo.event.startStr,
+                   end_date:selectInfo.event.endStr,
+                   event_name: selectInfo.event.title,
+               })
+               .then(() => {
+                   calendar.refetchEvents();
+               })
+               .catch(() => {
+                   alert("失敗しました");
+               });
+   
+        
+      },
+
+    eventResize: function(info) {
+   
+
+   
     },
 
-});
+    });
 
+    
 
 calendar.render();
 });
