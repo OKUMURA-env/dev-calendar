@@ -28,7 +28,7 @@ class ScheduleController extends Controller
         $end_date = $request->input('end_date');
 
         // 登録処理
-        return Schedule::query()
+        $schedule =  Schedule::query()
             ->select(
                 // FullCalendarの形式に合わせる
                 'id',
@@ -40,6 +40,7 @@ class ScheduleController extends Controller
             ->where('end_date', '>', $start_date)
             ->where('start_date', '<', $end_date)
             ->get();
+            return $schedule;
     }
 
     // "2019-12-12T00:00:00+09:00"のようなデータを今回のDBに合うように"2019-12-12"に整形
@@ -58,12 +59,10 @@ class ScheduleController extends Controller
         $event = Schedule::create([
             'event_name' => $request->event_name,
             'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'end_date' => $request->end_date, 
         ]);
 
         return response()->json($event);
-
-        return redirect('http://localhost/calendar');
     }
 
     /**
@@ -81,7 +80,6 @@ class ScheduleController extends Controller
 
         return response()->json($event);
 
-        return redirect('http://localhost/calendar');
     }
 
     /**
