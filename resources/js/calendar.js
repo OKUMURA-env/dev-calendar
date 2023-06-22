@@ -11,13 +11,13 @@ axios.defaults.headers.common = {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content"),
 };
-
+var calendar = null;
 document.addEventListener('DOMContentLoaded', function() {
 
 var containerEl = document.getElementById('external-events-list');
 var calendarEl = document.getElementById("calendar");
 
-let calendar = new Calendar(calendarEl, {
+ calendar = new Calendar(calendarEl, {
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
     initialView: "dayGridMonth",
 
@@ -39,27 +39,15 @@ let calendar = new Calendar(calendarEl, {
    
     noEventsContent: "スケジュールはありません",
 
-    // 日付をクリック、または範囲を選択したイベント
-    selectable: true,
-    select: function (selectInfo) {
-        let title = prompt("イベントを入力してください");
-
-        // console.log(selectInfo);
-        if (title) {
-            axios
-                .post("http://localhost/schedule-add", {
-                    start_date: selectInfo.startStr.valueOf(),
-                    end_date: selectInfo.endStr.valueOf(),
-                    event_name: title,
-                })
-                .then(() => {
-                    calendar.refetchEvents();
-                })
-                .catch(() => {
-                    console.log(error);
-                });
-        }
+    // 日付をクリックしたイベント
+    dateClick: function (selectInfo) {
+        let date = selectInfo.dateStr;
+        $('#create_modal').modal('show');
+        $("#event_name").val("");
+        $("#start_date").val(date);
+        $("#end_date").val(date);
     },
+
     events: function (selectInfo, successCallback, failureCallback) {
         // Laravelのイベント取得処理の呼び出し
         axios
@@ -82,44 +70,18 @@ let calendar = new Calendar(calendarEl, {
     },
     
     eventClick:function(selectInfo,event,jsEvent){
-        console.log(selectInfo);
-        let selectId = selectInfo.event.id;
-        let title = prompt('予定を更新してください:'+selectInfo.event.title);
-        if(title && title!=""){
-            axios
-                .post("http://localhost/schedule-update", {
-                    id:selectId,
-                    start_date:selectInfo.event.startStr,
-                    end_date:selectInfo.event.endStr,
-                    event_name: title,
-                })
-                .then(() => {
-                    calendar.refetchEvents();
-                })
-                .catch(() => {
-                    alert("編集に失敗しました");
-                });
-    }
+        let id = selectInfo.event.id;
+        let event_name = selectInfo.event.title;
+        let start_date = selectInfo.event.startStr;
+        let end_date = selectInfo.event.endStr;
+        
+        $('#edit_modal').modal('show');
 
+        $("#id").val(id);
+        $("#edit_event_name").val(event_name);
+        $("#edit_start_date").val(start_date);
+        $("#edit_end_date").val(end_date);
 },
-
-    // eventClick:function(selectInfo){
-    //     if(confirm('削除しますか？')){
-    //         let selectId = selectInfo.event.id;
-    //         axios
-    //             .post("http://localhost/schedule-destroy", {
-    //                 id:selectId,
-    //             })
-    //             .then(() => {
-    //                 calendar.refetchEvents();
-    //             })
-    //             .catch(() => {
-    //                 alert("削除できませんでした");
-    //             });
-
-            
-    //     }
-    // },
 
     // droppable: true,//あってもなくてもいいかも
     editable: true,
@@ -163,4 +125,80 @@ let calendar = new Calendar(calendarEl, {
     
 
 calendar.render();
+
+
 });
+
+
+$(function() {
+            
+    $('#event_create').on('click', function() {
+
+        let event_name =  $('#event_name').val();
+        let start_date =  $('#start_date').val();
+        let end_date =  $('#end_date').val();
+        axios
+        .post("http://localhost/schedule-add", {
+            start_date: start_date,
+            end_date: end_date,
+            event_name:event_name,
+        })
+        .then((response) => {
+            calendar.refetchEvents();
+            $('#create_modal').modal('hide'); 
+        })
+        .catch(() => {
+            // バリデーションエラーなど
+            alert("登録に失敗しました");
+        });
+    });
+})
+
+$(function() {
+            
+    $('#event_update').on('click', function() {
+        let id = $("#id").val();
+        let event_name =  $('#edit_event_name').val();
+        let start_date =  $('#edit_start_date').val();
+        let end_date =  $('#edit_end_date').val();
+        
+        axios
+        .post("http://localhost/schedule-update", {
+            id: id,
+            start_date: start_date,
+            end_date: end_date,
+            event_name:event_name,
+        })
+        .then((response) => {
+            calendar.refetchEvents();
+            $('#edit_modal').modal('hide'); 
+        })
+        .catch(() => {
+            // バリデーションエラーなど
+            alert("登録に失敗しました");
+        });
+    });
+})
+
+$(function() {  
+    $('#event_destroy').on('click', function() {
+        let id = $("#id").val();
+        
+        if(!confirm('本当に削除しますか？')){
+            return false;
+        }else{
+        axios
+        .post("http://localhost/schedule-destroy", {
+            id: id,
+        })
+        .then((response) => {
+            calendar.refetchEvents();
+            $('#edit_modal').modal('hide'); 
+        })
+        .catch(() => {
+            // バリデーションエラーなど
+            alert("登録に失敗しました");
+        });
+    }
+    });
+})
