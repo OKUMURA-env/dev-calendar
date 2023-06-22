@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let draggableEl = document.getElementById("mydraggable");
     var calendarEl = document.getElementById("calendar");
 
-       // initialize the external events 追加
+    // initialize the external events 追加
     new Draggable(containerEl, {
         itemSelector: '.fc-event',
             eventData: function(eventEl) {
@@ -52,6 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // 日付をクリックしたイベント
         dateClick: function (selectInfo) {
             let date = selectInfo.dateStr;
+            
+            console.log(selectInfo);
             $("#create_modal").modal("show");
             $("#event_name").val("");
             $("#start_date").val(date);
@@ -78,12 +80,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert("登録に失敗しました");
                 });
         },
+        
+        // eventColor:'green',
 
         eventClick: function (selectInfo, event, jsEvent) {
+            console.log(selectInfo);
             let id = selectInfo.event.id;
             let event_name = selectInfo.event.title;
             let start_date = selectInfo.event.startStr;
             let end_date = selectInfo.event.endStr;
+            console.log(end_date);
 
             $("#edit_modal").modal("show");
 
@@ -93,9 +99,34 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#edit_end_date").val(end_date);
         },
 
-        // droppable: true,//あってもなくてもいいかも
+        droppable: true,
+        eventReceive: function(selectInfo) {
+            let event_name = selectInfo.draggedEl.innerText;
+            let drop_date = selectInfo.event.startStr;
+            console.log(event_name);
+            console.log(drop_date);
+
+            axios
+            .post("http://localhost/schedule-add", {
+                start_date: drop_date,
+                end_date: drop_date,
+                event_name: event_name,
+                
+            })
+            .then((response) => {
+                calendar.refetchEvents();
+                $("#create_modal").modal("hide");
+            })
+            .catch(() => {
+                // バリデーションエラーなど
+                alert("登録に失敗しました");
+            });
+        
+        },
+   
         editable: true,
         eventDrop: function (selectInfo, delta, revertFunc, jsEvent, ui, view) {
+            
             axios
                 .post("http://localhost/schedule-update", {
                     id: selectInfo.event.id,
@@ -136,6 +167,7 @@ $(function () {
         let event_name = $("#event_name").val();
         let start_date = $("#start_date").val();
         let end_date = $("#end_date").val();
+        console.log(event_name);
         axios
             .post("http://localhost/schedule-add", {
                 start_date: start_date,
@@ -200,3 +232,6 @@ $(function () {
         }
     });
 });
+
+
+    

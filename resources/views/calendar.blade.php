@@ -67,15 +67,11 @@
         <p>
             <strong>Draggable Events</strong>
         </p>
-        <div class="fc-event ui-draggable ui-draggable-handle">My Event 1</div>
-        <div class="fc-event ui-draggable ui-draggable-handle">My Event 2</div>
-        <div class="fc-event ui-draggable ui-draggable-handle">My Event 3</div>
-        <div class="fc-event ui-draggable ui-draggable-handle">My Event 4</div>
-        <div class="fc-event ui-draggable ui-draggable-handle">My Event 5</div>
-        <p>
-            <input type='checkbox' id='drop-remove' />
-            <label for='drop-remove'>remove after drop</label>
-        </p>
+        <input type="hidden" name="event_name" id="event_name_1" value="My Event 1"><div class="fc-event ui-draggable ui-draggable-handle">My Event 1</div>
+        <input type="hidden" name="event_name" id="event_name_2" value="My Event 2"><div class="fc-event ui-draggable ui-draggable-handle">My Event 2</div>
+        <input type="hidden" name="event_name" id="event_name_3" value="My Event 3"><div class="fc-event ui-draggable ui-draggable-handle">My Event 3</div>
+        <input type="hidden" name="event_name" id="event_name_4" value="My Event 4"><div class="fc-event ui-draggable ui-draggable-handle">My Event 4</div>
+        <input type="hidden" name="event_name" id="event_name_5" value="My Event 5"><div class="fc-event ui-draggable ui-draggable-handle">My Event 5</div>
     </div>
     <div id='calendar' class="col-10"></div>
 
