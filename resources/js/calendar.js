@@ -34,11 +34,19 @@ document.addEventListener("DOMContentLoaded", function () {
         events: "http://localhost/calendar",
         locale: "ja",
         height: "auto",
-        firstDay: 1,
+
+        views: {
+            dayGridTwoWeek: {
+              type: 'dayGrid',
+              buttonText: '2週間',
+              duration: { weeks: 2 }
+            }
+        },
+         
         headerToolbar: {
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,listMonth",
+            right: "dayGridMonth,dayGridTwoWeek,timeGridWeek,listMonth",
         },
         buttonText: {
             today: "今日",
@@ -46,19 +54,29 @@ document.addEventListener("DOMContentLoaded", function () {
             month: "月",
             list: "一覧",
         },
+        
 
         noEventsContent: "スケジュールはありません",
 
         // 日付をクリックしたイベント
-        dateClick: function (selectInfo) {
+        dateClick: function (selectInfo,allDay) {
             let date = selectInfo.dateStr;
             
-            console.log(selectInfo);
             $("#create_modal").modal("show");
             $("#event_name").val("");
             $("#start_date").val(date);
+            $("#start_time").val();
             $("#end_date").val(date);
+            $("#end_time").val();
+            $("#color").val("");
         },
+
+        
+
+        //週表記の終日表示のありなし
+        allDaySlot: true,
+        // 終日スロットのタイトル　デフォはall-day
+        allDayText: '終日',
 
         events: function (selectInfo, successCallback, failureCallback) {
             // Laravelのイベント取得処理の呼び出し
@@ -68,8 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     end_date: selectInfo.endStr.valueOf(),
                 })
                 .then((response) => {
-                    // console.log(response);
-
                     // 追加したイベントを削除
                     calendar.removeAllEvents();
                     // カレンダーに読み込み
@@ -80,37 +96,41 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert("登録に失敗しました");
                 });
         },
-        
-        // eventColor:'green',
 
         eventClick: function (selectInfo, event, jsEvent) {
-            console.log(selectInfo);
             let id = selectInfo.event.id;
             let event_name = selectInfo.event.title;
-            let start_date = selectInfo.event.startStr;
-            let end_date = selectInfo.event.endStr;
-            console.log(end_date);
+            let start = selectInfo.event.startStr;
+            let start_date = start.slice(0,10);
+            let start_time = start.slice(11,16)
+            let end = selectInfo.event.endStr;
+            let end_date = end.slice(0,10);
+            let end_time = end.slice(11,16);
 
             $("#edit_modal").modal("show");
 
             $("#id").val(id);
             $("#edit_event_name").val(event_name);
             $("#edit_start_date").val(start_date);
+            $("#edit_start_time").val(start_time);
             $("#edit_end_date").val(end_date);
+            $("#edit_end_time").val(end_time);
         },
 
         droppable: true,
         eventReceive: function(selectInfo) {
+            console.log(selectInfo);
             let event_name = selectInfo.draggedEl.innerText;
             let drop_date = selectInfo.event.startStr;
-            console.log(event_name);
-            console.log(drop_date);
-
+            let all_day = selectInfo.event.allDay;
+        
             axios
             .post("http://localhost/schedule-add", {
                 start_date: drop_date,
                 end_date: drop_date,
                 event_name: event_name,
+                color: "green",
+                all_day: all_day,
                 
             })
             .then((response) => {
@@ -165,14 +185,19 @@ document.addEventListener("DOMContentLoaded", function () {
 $(function () {
     $("#event_create").on("click", function () {
         let event_name = $("#event_name").val();
-        let start_date = $("#start_date").val();
-        let end_date = $("#end_date").val();
-        console.log(event_name);
+        let start_time = $("#start_time").val();
+        let start_date = $("#start_date").val()+" "+$("#start_time").val();
+        let end_date = $("#end_date").val()+" "+$("#end_time").val();
+        let color = $("#color").val();
+        let all_day = $("#all_day").prop("checked");
+        
         axios
             .post("http://localhost/schedule-add", {
                 start_date: start_date,
                 end_date: end_date,
                 event_name: event_name,
+                color: color,
+                all_day: all_day,
             })
             .then((response) => {
                 calendar.refetchEvents();
@@ -189,8 +214,8 @@ $(function () {
     $("#event_update").on("click", function () {
         let id = $("#id").val();
         let event_name = $("#edit_event_name").val();
-        let start_date = $("#edit_start_date").val();
-        let end_date = $("#edit_end_date").val();
+        let start_date = $("#edit_start_date").val()+" "+$("#edit_start_time").val();
+        let end_date = $("#edit_end_date").val()+" "+$("#edit_end_time").val();
 
         axios
             .post("http://localhost/schedule-update", {
@@ -233,5 +258,35 @@ $(function () {
     });
 });
 
+//時間フォームの表示・非表示 (終日チェックボックス)
+$(function () {
+    $("#all_day").change(function () {
+        if ($(this).prop("checked")) {
+            $("#start_time").hide("");
+            $("#end_time").hide("");
 
-    
+            $("#start_time").val("");
+            $("#end_time").val("");
+        } else {
+            $("#start_time").show("");
+            $("#end_time").show("");
+            
+        }
+    });
+});
+
+$(function () {
+    $("#edit_all_day").change(function () {
+        if ($(this).prop("checked")) {
+            $("#edit_start_time").hide("");
+            $("#edit_end_time").hide("");
+
+            $("#edit_start_time").val("");
+            $("#edit_end_time").val("");
+        } else {
+            $("#edit_start_time").show("");
+            $("#edit_end_time").show("");
+            
+        }
+    });
+});
