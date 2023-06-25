@@ -12,5 +12,7 @@ class Schedule extends Model
         'start_date',
         'end_date',
         'event_name',
+        'color',
+        'all_day'
     ];
 }

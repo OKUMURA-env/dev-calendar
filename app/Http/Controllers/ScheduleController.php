@@ -34,7 +34,9 @@ class ScheduleController extends Controller
                 'id',
                 'start_date as start',
                 'end_date as end',
-                'event_name as title'
+                'event_name as title',
+                'color' , 
+                'all_day'
             )
             // FullCalendarの表示範囲のみ表示
             ->where('end_date', '>', $start_date)
@@ -56,10 +58,13 @@ class ScheduleController extends Controller
      */
     public function scheduleAdd(Request $request)
     {
+        // dd($request->all());
         $event = Schedule::create([
             'event_name' => $request->event_name,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date, 
+            'color' => $request->color,
+            'all_day' => $request->all_day,
         ]);
 
         return response()->json($event);
