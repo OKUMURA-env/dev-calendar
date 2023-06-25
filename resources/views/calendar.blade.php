@@ -67,11 +67,11 @@
         <p>
             <strong>Draggable Events</strong>
         </p>
-        <input type="hidden" name="event_name" id="event_name_1" value="My Event 1"><div class="fc-event ui-draggable ui-draggable-handle">My Event 1</div>
-        <input type="hidden" name="event_name" id="event_name_2" value="My Event 2"><div class="fc-event ui-draggable ui-draggable-handle">My Event 2</div>
-        <input type="hidden" name="event_name" id="event_name_3" value="My Event 3"><div class="fc-event ui-draggable ui-draggable-handle">My Event 3</div>
-        <input type="hidden" name="event_name" id="event_name_4" value="My Event 4"><div class="fc-event ui-draggable ui-draggable-handle">My Event 4</div>
-        <input type="hidden" name="event_name" id="event_name_5" value="My Event 5"><div class="fc-event ui-draggable ui-draggable-handle">My Event 5</div>
+        <input type="hidden" name="event_name" id="event_name_1" value="My Event 1"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:green;">My Event 1</div>
+        <input type="hidden" name="event_name" id="event_name_2" value="My Event 2"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:red;">My Event 2</div>
+        <input type="hidden" name="event_name" id="event_name_3" value="My Event 3"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:blue;">My Event 3</div>
+        <input type="hidden" name="event_name" id="event_name_4" value="My Event 4"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:pink;">My Event 4</div>
+        <input type="hidden" name="event_name" id="event_name_5" value="My Event 5"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:orange;">My Event 5</div>
     </div>
     <div id='calendar' class="col-10"></div>
 
@@ -85,12 +85,20 @@
                     </button>
                 </div><!-- /.modal-header -->
                 <div class="modal-body">
-                    <p>タイトル</p>
+                    <h5>タイトル</h5>
                     <input type="text" name="event_name" id="event_name">
+                    <div>
+                    <h5>日時</h5>
+                    <input type="checkbox" id="all_day" checked = "checked">終日
                     <p>開始日</p>
                     <input type="date" name="start_date" id="start_date">
+                    <input type="time" name="start_time" id="start_time" style=display:none;>
                     <p>終了日</p>
                     <input type="date" name="end_date" id="end_date">
+                    <input type="time" name="end_time" id="end_time" style=display:none;>
+                    </div>
+                    <h5>カラー</h5>
+                    <input type="color" name="color" id="color">
 
                 </div><!-- /.modal-body -->
                 <div class="modal-footer">
@@ -112,12 +120,20 @@
                 <div class="modal-body">
                     {{--id取得--}}
                     <input type="hidden" name="id" id="id">
-                    <p>タイトル</p>
+                    <h5>タイトル</h5>
                     <input type="text" name="edit_event_name" id="edit_event_name">
+                    <div>
+                    <h5>日時</h5>
+                    <input type="checkbox" id="edit_all_day">終日
                     <p>開始日</p>
                     <input type="date" name="edit_start_date" id="edit_start_date">
+                    <input type="time" name="edit_start_time" id="edit_start_time">
                     <p>終了日</p>
                     <input type="date" name="edit_end_date" id="edit_end_date">
+                    <input type="time" name="edit_end_time" id="edit_end_time">
+                    </div>
+                    <h5>カラー</h5>
+                    <input type="color" name="color" id="color">
 
                 </div><!-- /.modal-body -->
                 <div class="modal-footer">
