@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
         itemSelector: '.fc-event',
             eventData: function(eventEl) {
                 return {
-                    title: eventEl.innerText
+                    title: eventEl.innerText,
+                    backgroundColor:eventEl.style.backgroundColor
                 };
             }
     });
@@ -60,8 +61,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 日付をクリックしたイベント
         dateClick: function (selectInfo,allDay) {
+            console.log(selectInfo);
             let date = selectInfo.dateStr;
-            
+            let year = date.slice(0,4)
+            let month = date.slice(5,7)
+            let day = date.slice(8,10)
+            console.log(date);
+            console.log(year);
+            console.log(month);
+            console.log(day);
+
+            const converse_date = new Date(year, month, day); 
+            console.log(converse_date);
+
+            const change_month = converse_date.getMonth();
+            console.log(change_month);
+            const change_day = converse_date.getDate()+1;
+            console.log(change_day);
+
+
+
+            // let tomorrow = date.add(+1,"days");
+            // console.log(tomorrow);
+
+            // var test=moment(formatNengappi(date+"0000-00-00",1));
+            // console.log(test);
+
             $("#create_modal").modal("show");
             $("#event_name").val("");
             $("#start_date").val(date);
@@ -90,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     calendar.removeAllEvents();
                     // カレンダーに読み込み
                     successCallback(response.data);
+                    console.log(response.data);
                 })
                 .catch(() => {
                     // バリデーションエラーなど
@@ -98,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         eventClick: function (selectInfo, event, jsEvent) {
+            console.log(selectInfo);
             let id = selectInfo.event.id;
             let event_name = selectInfo.event.title;
             let start = selectInfo.event.startStr;
@@ -106,6 +133,19 @@ document.addEventListener("DOMContentLoaded", function () {
             let end = selectInfo.event.endStr;
             let end_date = end.slice(0,10);
             let end_time = end.slice(11,16);
+            let all_day = selectInfo.event.allDay;
+            console.log(all_day);
+
+            //終日の予定は終日チェックボックス保持・時間指定の予定は時間フォームの内容保持
+            if(all_day){
+                $("#edit_all_day").prop('checked', true);
+                $("#edit_start_time").hide("");
+                $("#edit_end_time").hide("");
+            }else{
+                $("#edit_all_day").prop('checked', false);
+                $("#edit_start_time").show("");
+                $("#edit_end_time").show("");
+            }
 
             $("#edit_modal").modal("show");
 
@@ -122,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log(selectInfo);
             let event_name = selectInfo.draggedEl.innerText;
             let drop_date = selectInfo.event.startStr;
+            let color = selectInfo.event.backgroundColor;
             let all_day = selectInfo.event.allDay;
         
             axios
@@ -129,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 start_date: drop_date,
                 end_date: drop_date,
                 event_name: event_name,
-                color: "green",
+                color: color,
                 all_day: all_day,
                 
             })
@@ -190,6 +231,16 @@ $(function () {
         let end_date = $("#end_date").val()+" "+$("#end_time").val();
         let color = $("#color").val();
         let all_day = $("#all_day").prop("checked");
+
+        if(all_day && start_date===end_date){
+            alert("終了日は開始日より後に設定してください。");
+            return    
+        }
+
+        if(all_day && start_date>=end_date){
+            alert("終了日は開始日より後に設定してください。");
+            return    
+        }
         
         axios
             .post("http://localhost/schedule-add", {
@@ -200,6 +251,7 @@ $(function () {
                 all_day: all_day,
             })
             .then((response) => {
+                console.log(response);
                 calendar.refetchEvents();
                 $("#create_modal").modal("hide");
             })

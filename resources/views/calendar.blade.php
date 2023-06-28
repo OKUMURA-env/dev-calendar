@@ -67,11 +67,11 @@
         <p>
             <strong>Draggable Events</strong>
         </p>
-        <input type="hidden" name="event_name" id="event_name_1" value="My Event 1"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:green;">My Event 1</div>
-        <input type="hidden" name="event_name" id="event_name_2" value="My Event 2"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:red;">My Event 2</div>
-        <input type="hidden" name="event_name" id="event_name_3" value="My Event 3"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:blue;">My Event 3</div>
-        <input type="hidden" name="event_name" id="event_name_4" value="My Event 4"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:pink;">My Event 4</div>
-        <input type="hidden" name="event_name" id="event_name_5" value="My Event 5"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:orange;">My Event 5</div>
+        <input type="hidden" name="event_name" id="event_name_1" value="My Event 1"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:green;border-color:green;">My Event 1</div>
+        <input type="hidden" name="event_name" id="event_name_2" value="My Event 2"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:red;border-color:red;">My Event 2</div>
+        <input type="hidden" name="event_name" id="event_name_3" value="My Event 3"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:blue;border-color:blue;">My Event 3</div>
+        <input type="hidden" name="event_name" id="event_name_4" value="My Event 4"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:pink;border-color:pink;">My Event 4</div>
+        <input type="hidden" name="event_name" id="event_name_5" value="My Event 5"><div class="fc-event ui-draggable ui-draggable-handle" style="background-color:orange;border-color:orange;">My Event 5</div>
     </div>
     <div id='calendar' class="col-10"></div>
 
