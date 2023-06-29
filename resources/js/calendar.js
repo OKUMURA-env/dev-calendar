@@ -61,37 +61,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 日付をクリックしたイベント
         dateClick: function (selectInfo,allDay) {
-            console.log(selectInfo);
             let date = selectInfo.dateStr;
+
+            //終了日をdateの一日後にする。
+            //date型に変換
             let year = date.slice(0,4)
             let month = date.slice(5,7)
             let day = date.slice(8,10)
-            console.log(date);
-            console.log(year);
-            console.log(month);
-            console.log(day);
-
+      
             const converse_date = new Date(year, month, day); 
-            console.log(converse_date);
+            
+            //1日分加算
+            var add_day = converse_date.getDate()+1;
+            add_day = ('0' + add_day).slice(-2);
 
-            const change_month = converse_date.getMonth();
-            console.log(change_month);
-            const change_day = converse_date.getDate()+1;
-            console.log(change_day);
-
-
-
-            // let tomorrow = date.add(+1,"days");
-            // console.log(tomorrow);
-
-            // var test=moment(formatNengappi(date+"0000-00-00",1));
-            // console.log(test);
+            //stringsに変換
+            var format_str = 'YYYY-MM-DD';
+            format_str = format_str.replace('YYYY',year);
+            format_str = format_str.replace('MM',month);
+            format_str = format_str.replace('DD',add_day)
 
             $("#create_modal").modal("show");
             $("#event_name").val("");
             $("#start_date").val(date);
             $("#start_time").val();
-            $("#end_date").val(date);
+            $("#end_date").val(format_str);
             $("#end_time").val();
             $("#color").val("");
         },
@@ -115,7 +109,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     calendar.removeAllEvents();
                     // カレンダーに読み込み
                     successCallback(response.data);
-                    console.log(response.data);
+
+                    console.log(calendar);
+                    
                 })
                 .catch(() => {
                     // バリデーションエラーなど
@@ -124,7 +120,6 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         eventClick: function (selectInfo, event, jsEvent) {
-            console.log(selectInfo);
             let id = selectInfo.event.id;
             let event_name = selectInfo.event.title;
             let start = selectInfo.event.startStr;
@@ -159,16 +154,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
         droppable: true,
         eventReceive: function(selectInfo) {
-            console.log(selectInfo);
             let event_name = selectInfo.draggedEl.innerText;
             let drop_date = selectInfo.event.startStr;
             let color = selectInfo.event.backgroundColor;
             let all_day = selectInfo.event.allDay;
+
+            //終了日をdrop_dateの一日後にする。
+            //date型に変換
+            let year = drop_date.slice(0,4)
+            let month = drop_date.slice(5,7)
+            let day = drop_date.slice(8,10)
+      
+            const converse_date = new Date(year, month, day); 
+            
+            //1日分加算
+            var add_day = converse_date.getDate()+1;
+            add_day = ('0' + add_day).slice(-2);
+
+            //stringsに変換
+            var format_str = 'YYYY-MM-DD';
+            format_str = format_str.replace('YYYY',year);
+            format_str = format_str.replace('MM',month);
+            format_str = format_str.replace('DD',add_day)
+
+            console.log(format_str);
         
             axios
             .post("http://localhost/schedule-add", {
                 start_date: drop_date,
-                end_date: drop_date,
+                end_date: format_str,
                 event_name: event_name,
                 color: color,
                 all_day: all_day,
