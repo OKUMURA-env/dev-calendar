@@ -24,21 +24,25 @@ class ScheduleController extends Controller
      */
     public function scheduleGet(Request $request)
     {    
-        $start_date = date('Y-m-d', $request->input('start') / 1000);
-        $end_date = date('Y-m-d', $request->input('end') / 1000);
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
 
         // 登録処理
-        return Schedule::query()
+        $schedule =  Schedule::query()
             ->select(
                 // FullCalendarの形式に合わせる
+                'id',
                 'start_date as start',
                 'end_date as end',
-                'event_name as title'
+                'event_name as title',
+                'color' , 
+                'all_day'
             )
             // FullCalendarの表示範囲のみ表示
             ->where('end_date', '>', $start_date)
             ->where('start_date', '<', $end_date)
             ->get();
+            return $schedule;
     }
 
     // "2019-12-12T00:00:00+09:00"のようなデータを今回のDBに合うように"2019-12-12"に整形
@@ -54,7 +58,26 @@ class ScheduleController extends Controller
      */
     public function scheduleAdd(Request $request)
     {
+        // dd($request->all());
         $event = Schedule::create([
+            'event_name' => $request->event_name,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date, 
+            'color' => $request->color,
+            'all_day' => $request->all_day,
+        ]);
+
+        return response()->json($event);
+    }
+
+    /**
+     * イベントを更新
+     *
+     * @param  Request  $request
+     */
+    public function scheduleUpdate(Request $request)
+    {
+        $event = Schedule::where('id',$request->id)->update([
             'event_name' => $request->event_name,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
@@ -62,6 +85,18 @@ class ScheduleController extends Controller
 
         return response()->json($event);
 
+    }
+
+    /**
+     * イベントを削除
+     *
+     * @param  Request  $request
+     */
+    public function scheduleDestroy(Request $request)
+    {
+        Schedule::find($request->id)->delete();
+
         return redirect('http://localhost/calendar');
     }
+
 }

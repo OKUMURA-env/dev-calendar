@@ -15,9 +15,11 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->date('start_date')->comment('開始日');
-            $table->date('end_date')->comment('終了日')->nullable();
+            $table->string('start_date')->comment('開始時')->nullable();
+            $table->string('end_date')->comment('終了時')->nullable();
             $table->string('event_name')->comment('イベント名');
+            $table->string('color')->default('green');
+            $table->boolean('all_day')->default(true)->comment('1なら通知あり。0なら通知なし。');
             $table->timestamps();
         });
     }
